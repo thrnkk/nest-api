@@ -29,7 +29,5 @@ private readonly logger = new Logger(AllExceptionsFilter.name)
             error: message,
         })
 
-        
     }
-
 }

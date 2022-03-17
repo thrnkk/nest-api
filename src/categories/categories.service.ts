@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { PlayersService } from 'src/players/players.service';
@@ -13,6 +13,8 @@ export class CategoriesService {
         @InjectModel('Category') private readonly categoryModel: Model<Category>,
         private readonly playersService: PlayersService
     ) {}
+
+    private logger = new Logger(CategoriesService.name);
 
     async createCategory(createCategoryDTO: CreateCategoryDTO): Promise<Category> {
 
@@ -40,6 +42,20 @@ export class CategoriesService {
         if (!categoryFound) throw new BadRequestException(`Category ${category} not found`);
 
         return categoryFound;
+
+    }
+
+    async searchByPlayerId(_id: any): Promise<Category> {
+
+        const players = await this.playersService.search();
+
+        const playerFilter = players.filter( player => player._id == _id )
+
+        if (playerFilter.length == 0) {
+            throw new BadRequestException(`The ID ${_id} isn't a valid player ID.`)
+        }
+
+        return await this.categoryModel.findOne().where('players').in(_id).exec()
 
     }
 

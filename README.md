@@ -35,6 +35,11 @@ $ npm install
 ## Running the app
 
 ```bash
+#creating a service
+nest g module xxxx
+nest g controller xxxx
+nest g service xxxx
+
 # development
 $ npm run start
 
